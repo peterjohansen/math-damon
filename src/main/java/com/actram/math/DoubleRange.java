@@ -27,8 +27,7 @@ public class DoubleRange extends AbstractCountableRange<Double> {
 
 	@Override
 	public AbstractCountableRange<Double> center() {
-		Double value = (from + distance() / 2);
-		return (AbstractCountableRange<Double>) this.set(value, value);
+		return (AbstractCountableRange<Double>) this.set(from + distance() / 2);
 	}
 
 	@Override
