@@ -26,8 +26,8 @@ public class DoubleRange extends AbstractCountableRange<Double> {
 	}
 
 	@Override
-	public AbstractCountableRange<Double> center() {
-		return (AbstractCountableRange<Double>) this.set(from + distance() / 2);
+	public <R extends AbstractRange<Double>> R center() {
+		return cast(this.set(from + distance() / 2));
 	}
 
 	@Override
@@ -46,8 +46,8 @@ public class DoubleRange extends AbstractCountableRange<Double> {
 	}
 
 	@Override
-	public AbstractRange<Double> set(Double from, Double to) {
-		return new DoubleRange(from, to);
+	public <R extends AbstractRange<Double>> R set(Double from, Double to) {
+		return cast(new DoubleRange(from, to));
 	}
 
 	@Override

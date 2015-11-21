@@ -26,13 +26,13 @@ public class LongRange extends AbstractCountableRange<Long> {
 	}
 
 	@Override
-	public AbstractCountableRange<Long> center() {
+	public <R extends AbstractRange<Long>> R center() {
 		Long min = (from + distance() / 2);
 		Long max = min;
 		if (distance() % 2 != 0) {
 			max++;
 		}
-		return (AbstractCountableRange<Long>) this.set(min, max);
+		return cast(this.set(min, max));
 	}
 
 	@Override
@@ -51,8 +51,8 @@ public class LongRange extends AbstractCountableRange<Long> {
 	}
 
 	@Override
-	public AbstractRange<Long> set(Long from, Long to) {
-		return new LongRange(from, to);
+	public <R extends AbstractRange<Long>> R set(Long from, Long to) {
+		return cast(new LongRange(from, to));
 	}
 
 	@Override

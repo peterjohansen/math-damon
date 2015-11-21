@@ -19,20 +19,20 @@ public class IntegerRange extends AbstractCountableRange<Integer> {
 	public IntegerRange(int from, int to) {
 		super(from, to);
 	}
-	
+
 	@Override
 	protected Integer add(Integer value1, Integer value2) {
 		return (value1 + value2);
 	}
 
 	@Override
-	public AbstractCountableRange<Integer> center() {
+	public <R extends AbstractRange<Integer>> R center() {
 		Integer min = (from + distance() / 2);
 		Integer max = min;
 		if (distance() % 2 != 0) {
 			max++;
 		}
-		return (AbstractCountableRange<Integer>) this.set(min, max);
+		return cast(this.set(min, max));
 	}
 
 	@Override
@@ -51,8 +51,8 @@ public class IntegerRange extends AbstractCountableRange<Integer> {
 	}
 
 	@Override
-	public AbstractRange<Integer> set(Integer from, Integer to) {
-		return new IntegerRange(from, to);
+	public <R extends AbstractRange<Integer>> R set(Integer from, Integer to) {
+		return cast(new IntegerRange(from, to));
 	}
 
 	@Override
