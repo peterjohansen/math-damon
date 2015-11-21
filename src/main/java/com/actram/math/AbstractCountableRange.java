@@ -28,7 +28,7 @@ public abstract class AbstractCountableRange<T extends Comparable<T>> extends Ab
 	/**
 	 * @return the center, expressed as a range
 	 */
-	public abstract AbstractCountableRange<T> center();
+	public abstract <R extends AbstractRange<T>> R center();
 
 	/**
 	 * @return the distance the range covers
@@ -41,12 +41,12 @@ public abstract class AbstractCountableRange<T extends Comparable<T>> extends Ab
 	 * @return a range with the given amount subtracted and added to the minimum
 	 *         and maximum value, respectively, of this range
 	 */
-	public AbstractCountableRange<T> extend(T amount) {
+	public <R extends AbstractCountableRange<T>> R extend(T amount) {
 		Objects.requireNonNull(amount, "amount cannot be null");
 		if (isNegative(amount)) {
 			throw new IllegalArgumentException("amount cannot be negative");
 		}
-		return this.extendMinimum(amount).extendMaximum(amount);
+		return cast(this.extendMinimum(amount).extendMaximum(amount));
 	}
 
 	/**
@@ -54,12 +54,12 @@ public abstract class AbstractCountableRange<T extends Comparable<T>> extends Ab
 	 *         rang
 	 * @throws IllegalArgumentException if the amount is negative
 	 */
-	public AbstractCountableRange<T> extendMaximum(T amount) {
+	public <R extends AbstractCountableRange<T>> R extendMaximum(T amount) {
 		Objects.requireNonNull(amount, "amount cannot be null");
 		if (isNegative(amount)) {
 			throw new IllegalArgumentException("amount cannot be negative");
 		}
-		return (AbstractCountableRange<T>) this.setTo(add(this.to, amount));
+		return cast(this.setTo(add(this.to, amount)));
 	}
 
 	/**
@@ -67,12 +67,12 @@ public abstract class AbstractCountableRange<T extends Comparable<T>> extends Ab
 	 *         of this range
 	 * @throws IllegalArgumentException if the amount is negative
 	 */
-	public AbstractCountableRange<T> extendMinimum(T amount) {
+	public <R extends AbstractCountableRange<T>> R extendMinimum(T amount) {
 		Objects.requireNonNull(amount, "amount cannot be null");
 		if (isNegative(amount)) {
 			throw new IllegalArgumentException("amount cannot be negative");
 		}
-		return (AbstractCountableRange<T>) this.setFrom(subtract(this.from, amount));
+		return cast(this.setFrom(subtract(this.from, amount)));
 	}
 
 	/**
@@ -109,10 +109,10 @@ public abstract class AbstractCountableRange<T extends Comparable<T>> extends Ab
 	/**
 	 * @return a range moved by the given amount
 	 */
-	public AbstractCountableRange<T> shift(T amount) {
+	public <R extends AbstractCountableRange<T>> R shift(T amount) {
 		Objects.requireNonNull(amount, "amount cannot be null");
 
-		return (AbstractCountableRange<T>) this.set(add(from, amount), add(to, amount));
+		return cast(this.set(add(from, amount), add(to, amount)));
 	}
 
 	/**
@@ -132,7 +132,7 @@ public abstract class AbstractCountableRange<T extends Comparable<T>> extends Ab
 	 * @return
 	 * @throws IllegalArgumentException if the amount is negative
 	 */
-	public AbstractCountableRange<T> trim(T amount) {
+	public <R extends AbstractCountableRange<T>> R trim(T amount) {
 		Objects.requireNonNull(amount, "amount cannot be null");
 		if (isNegative(amount)) {
 			throw new IllegalArgumentException("amount cannot be negative");
@@ -147,7 +147,7 @@ public abstract class AbstractCountableRange<T extends Comparable<T>> extends Ab
 			// we will clamp the values to a midpoint.
 			min = max = add(this.from, half(subtract(this.to, this.from)));
 		}
-		return (AbstractCountableRange<T>) this.set(min, max);
+		return cast(this.set(min, max));
 	}
 
 	/**
@@ -161,7 +161,7 @@ public abstract class AbstractCountableRange<T extends Comparable<T>> extends Ab
 	 * @return the new range
 	 * @throws IllegalArgumentException if the amount is negative
 	 */
-	public AbstractCountableRange<T> trimMaximum(T amount) {
+	public <R extends AbstractCountableRange<T>> R trimMaximum(T amount) {
 		Objects.requireNonNull(amount, "amount cannot be null");
 		if (isNegative(amount)) {
 			throw new IllegalArgumentException("amount cannot be negative");
@@ -171,7 +171,7 @@ public abstract class AbstractCountableRange<T extends Comparable<T>> extends Ab
 		if (newTo.compareTo(this.from) < 0) {
 			newTo = this.from;
 		}
-		return (AbstractCountableRange<T>) this.setTo(newTo);
+		return cast(this.setTo(newTo));
 	}
 
 	/**
@@ -185,7 +185,7 @@ public abstract class AbstractCountableRange<T extends Comparable<T>> extends Ab
 	 * @return the new range
 	 * @throws IllegalArgumentException if the amount is negative
 	 */
-	public AbstractCountableRange<T> trimMinimum(T amount) {
+	public <R extends AbstractCountableRange<T>> R trimMinimum(T amount) {
 		Objects.requireNonNull(amount, "amount cannot be null");
 		if (isNegative(amount)) {
 			throw new IllegalArgumentException("amount cannot be negative");
@@ -195,6 +195,6 @@ public abstract class AbstractCountableRange<T extends Comparable<T>> extends Ab
 		if (newFrom.compareTo(this.to) > 0) {
 			newFrom = this.to;
 		}
-		return (AbstractCountableRange<T>) this.setFrom(newFrom);
+		return cast(this.setFrom(newFrom));
 	}
 }

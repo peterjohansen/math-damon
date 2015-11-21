@@ -32,6 +32,18 @@ public abstract class AbstractRange<T extends Comparable<T>> {
 	}
 
 	/**
+	 * Performs a downcast on the given range to the desired type of range.
+	 * Extracted to a method to reduce {@code @SuppressWarnings("unchecked")}
+	 * -clutter.
+	 * 
+	 * return the range as the correct type
+	 */
+	@SuppressWarnings("unchecked")
+	protected <R extends AbstractRange<T>, S extends AbstractRange<T>> R cast(S range) {
+		return (R) range;
+	}
+
+	/**
 	 * @return whether this range completely encompasses the given range
 	 */
 	public boolean contains(AbstractRange<T> range) {
@@ -144,7 +156,7 @@ public abstract class AbstractRange<T extends Comparable<T>> {
 	 * 
 	 * @return the new range
 	 */
-	public AbstractRange<T> safeSet(T value1, T value2) {
+	public <R extends AbstractRange<T>> R safeSet(T value1, T value2) {
 		Objects.requireNonNull(value1, "first value cannot be null");
 		Objects.requireNonNull(value2, "second value cannot be null");
 
@@ -159,8 +171,8 @@ public abstract class AbstractRange<T extends Comparable<T>> {
 	/**
 	 * @return this range with the given value as both the minimum and maximum
 	 */
-	public AbstractRange<T> set(T value) {
-		return this.set(value, value);
+	public <R extends AbstractRange<T>> R set(T value) {
+		return cast(this.set(value, value));
 	}
 
 	/**
@@ -168,14 +180,14 @@ public abstract class AbstractRange<T extends Comparable<T>> {
 	 *             maximum
 	 * @return a range with the given boundaries
 	 */
-	public abstract AbstractRange<T> set(T from, T to);
+	public abstract <R extends AbstractRange<T>> R set(T from, T to);
 
 	/**
 	 * @return this range with the given minimum
 	 * @throws IllegalArgumentException if the given value is larger than the
 	 *             maximum
 	 */
-	public AbstractRange<T> setFrom(T from) {
+	public <R extends AbstractRange<T>> R setFrom(T from) {
 		Objects.requireNonNull(from, "minimum cannot be null");
 		return this.set(from, this.to);
 	}
@@ -188,7 +200,7 @@ public abstract class AbstractRange<T extends Comparable<T>> {
 	 * @throws IllegalArgumentException if the given value is smaller than the
 	 *             minimum
 	 */
-	public AbstractRange<T> setTo(T to) {
+	public <R extends AbstractRange<T>> R setTo(T to) {
 		Objects.requireNonNull(to, "maximum cannot be null");
 		return this.set(this.from, to);
 	}
