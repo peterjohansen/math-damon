@@ -19,7 +19,7 @@ import com.actram.math.Rational;
 @RunWith(Parameterized.class)
 public class RationalTest {
 
-	public static final int N = 100;
+	private static final int N = 100;
 
 	@Parameters
 	public static Collection<Object> data() {
@@ -36,25 +36,25 @@ public class RationalTest {
 		return Arrays.asList(data);
 	}
 
-	@Parameter(0) public Rational real1;
-	@Parameter(1) public Rational real2;
-	@Parameter(2) public Rational real3;
+	@Parameter(0) public Rational rational1;
+	@Parameter(1) public Rational rational2;
+	@Parameter(2) public Rational rational3;
 
 	@Test
 	public void testAbsolute() {
-		assertEquals(real1.absolute(), new Rational(real1.numerator(), real1.denominator()));
-		if (real1.isNegative()) {
-			assertNotEquals(real1, real1.absolute());
+		assertEquals(rational1.absolute(), new Rational(rational1.numerator(), rational1.denominator()));
+		if (rational1.isNegative()) {
+			assertNotEquals(rational1, rational1.absolute());
 		}
 	}
 
 	@Test
 	public void testAdd() {
-		assertTrue(real1.compareTo(real1.add(real1)) > 0);
-		assertEquals(real1.subtract(1), real1.add(-1));
-		assertEquals(real1.multiply(2), real1.add(real1));
-		assertEquals(real1, real1.add(Rational.ZERO));
-		assertEquals(real1.add(Rational.ONE), real1.add(1));
+		assertTrue(rational1.compareTo(rational1.add(rational1)) > 0);
+		assertEquals(rational1.subtract(1), rational1.add(-1));
+		assertEquals(rational1.multiply(2), rational1.add(rational1));
+		assertEquals(rational1, rational1.add(Rational.ZERO));
+		assertEquals(rational1.add(Rational.ONE), rational1.add(1));
 	}
 
 	@Test
@@ -63,11 +63,39 @@ public class RationalTest {
 	}
 
 	@Test
-	public void testMultiply() {
-		assertEquals(real1, real1.multiply(1));
-		assertEquals(0, real1.multiply(0));
-		assertTrue(real1.multiply(2).compareTo(real1) > 0);
-		assertTrue(real1.multiply(0.5).compareTo(real1) < 0);
+	public void testAddCommutative() {
+		assertEquals(rational1.add(rational2), rational2.add(rational1));
+	}
+
+	@Test
+	public void testCompareTo() {
+		assertEquals(rational1.toDouble() < rational1.add(1).toDouble(), rational1.compareTo(rational1.add(1)) < 0);
+		assertEquals(rational1.toDouble() > rational1.subtract(1).toDouble(), rational1.compareTo(rational1.add(1)) > 0);
+		assertTrue(rational1.compareTo(rational1) == 0);
+	}
+
+	@Test
+	public void testDenominator() {
+		assertTrue(rational1.denominator() > 0);
+	}
+
+	@Test
+	public void testDivide() {
+		assertEquals(rational1, rational1.divide(1));
+		assertTrue(rational1.divide(2).compareTo(rational1) < 0);
+		assertTrue(rational1.divide(0.5).compareTo(rational1) > 0);
+	}
+
+	@Test
+	public void testInverse() {
+		assertEquals(rational1.numerator(), rational1.inverse().denominator());
+		assertEquals(rational1.denominator(), rational1.inverse().numerator());
+		assertEquals(rational1.signum(), rational1.inverse().signum());
+	}
+
+	@Test
+	public void testIsNegative() {
+		assertEquals(rational1.signum() < 0, rational1.isNegative());
 	}
 
 	@Test
@@ -76,38 +104,29 @@ public class RationalTest {
 	}
 
 	@Test
+	public void testMultiply() {
+		assertEquals(rational1, rational1.multiply(1));
+		assertEquals(0, rational1.multiply(0));
+		assertTrue(rational1.multiply(2).compareTo(rational1) > 0);
+		assertTrue(rational1.multiply(0.5).compareTo(rational1) < 0);
+	}
+
+	@Test
 	public void testMultiplyCommutative() {
-		assertEquals(real1.multiply(real2), real2.multiply(real1));
+		assertEquals(rational1.multiply(rational2), rational2.multiply(rational1));
 	}
 
 	@Test
-	public void testAddCommutative() {
-		assertEquals(real1.add(real2), real2.add(real1));
+	public void testOpposite() {
+		if (rational1.signum() != 0) {
+			assertEquals(rational1.multiply(-1), rational1.opposite());
+		}
 	}
 
 	@Test
-	public void testCompareTo() {
-		assertEquals(real1.toDouble() < real1.add(1).toDouble(), real1.compareTo(real1.add(1)) < 0);
-		assertEquals(real1.toDouble() > real1.subtract(1).toDouble(), real1.compareTo(real1.add(1)) > 0);
-		assertTrue(real1.compareTo(real1) == 0);
-	}
-
-	@Test
-	public void testDenominator() {
-		assertTrue(real1.denominator() > 0);
-	}
-
-	@Test
-	public void testDivide() {
-		assertEquals(real1, real1.divide(1));
-		assertTrue(real1.divide(2).compareTo(real1) < 0);
-		assertTrue(real1.divide(0.5).compareTo(real1) > 0);
-	}
-
-	@Test
-	public void testInverse() {
-		assertEquals(real1.numerator(), real1.inverse().denominator());
-		assertEquals(real1.denominator(), real1.inverse().numerator());
-		assertEquals(real1.signum(), real1.inverse().signum());
+	public void testSignum() {
+		int sign = rational1.signum();
+		assertTrue(sign == -1 || sign == 0 || sign == 1);
+		assertEquals((int) Math.signum(rational1.toInteger()), sign);
 	}
 }

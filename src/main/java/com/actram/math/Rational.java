@@ -1,9 +1,9 @@
 package com.actram.math;
 
 /**
- * Immutable real number with chainable methods.
+ * Immutable rational number with chainable methods.
  * <p>
- * Expressed as {@code a/b, b!= 0}.
+ * Expressed as: {@code a/b, b!= 0}
  *
  * @author Peter André Johansen
  */
@@ -27,8 +27,17 @@ public class Rational implements Comparable<Rational> {
 	}
 
 	public Rational(int p, int q) {
-		this.p = p;
-		this.q = q;
+
+		// Store the sign in the numerator
+		if (q < 0) {
+			q = -q;
+			p = -p;
+		}
+
+		// Reduce the fraction as much as possible
+		int gcd = MathUtil.gcd(p, q);
+		this.p = p / gcd;
+		this.q = q / gcd;
 	}
 
 	public Rational absolute() {
@@ -36,15 +45,15 @@ public class Rational implements Comparable<Rational> {
 	}
 
 	public Rational add(double n) {
-		return this;
+		return null;
 	}
 
-	public Rational add(Rational real) {
+	public Rational add(Rational r) {
 		return null;
 	}
 
 	@Override
-	public int compareTo(Rational o) {
+	public int compareTo(Rational r) {
 		return 0;
 	}
 
@@ -56,8 +65,8 @@ public class Rational implements Comparable<Rational> {
 		return null;
 	}
 
-	public Rational divide(Rational real) {
-		return null;
+	public Rational divide(Rational r) {
+		return this.set(p * r.q, q * r.p);
 	}
 
 	public Rational inverse() {
@@ -72,8 +81,8 @@ public class Rational implements Comparable<Rational> {
 		return this;
 	}
 
-	public Rational multiply(Rational real) {
-		return null;
+	public Rational multiply(Rational r) {
+		return this.set(p * r.p, q * r.q);
 	}
 
 	public int numerator() {
@@ -82,6 +91,10 @@ public class Rational implements Comparable<Rational> {
 
 	public Rational opposite() {
 		return null;
+	}
+
+	public Rational set(int p, int q) {
+		return new Rational(p, q);
 	}
 
 	public int signum() {
@@ -101,6 +114,6 @@ public class Rational implements Comparable<Rational> {
 	}
 
 	public String toString() {
-		return null;
+		return getClass().getSimpleName() + "[" + p + "/" + q + "]";
 	}
 }
