@@ -3,7 +3,6 @@ package com.actram.math.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,11 +24,11 @@ public class RationalTest {
 	public static Collection<Object> data() {
 		Object[] data = new Object[N];
 		for (int j = 0; j < N; j++) {
-			Object[] params = new Object[3];
+			Object[] params = new Object[2];
 			for (int i = 0; i < params.length; i++) {
-				int a = (int) (Math.random() * Math.sqrt(Integer.MAX_VALUE - 1));
-				int b = (int) (Math.random() * Math.sqrt(Integer.MAX_VALUE - 1));
-				data[j] = new Rational(a, b);
+				int a = (int) ((Math.random() < 0.5 ? 1 : -1) * (Math.random() * 1000 + 1));
+				int b = (int) ((Math.random() < 0.5 ? 1 : -1) * (Math.random() * 1000 + 1));
+				params[i] = new Rational(a, b);
 			}
 			data[j] = params;
 		}
@@ -38,7 +37,6 @@ public class RationalTest {
 
 	@Parameter(0) public Rational rational1;
 	@Parameter(1) public Rational rational2;
-	@Parameter(2) public Rational rational3;
 
 	@Test
 	public void testAbsolute() {
@@ -50,16 +48,13 @@ public class RationalTest {
 
 	@Test
 	public void testAdd() {
-		assertTrue(rational1.compareTo(rational1.add(rational1)) > 0);
+		if (!rational1.isNegative()) {
+			assertTrue(rational1.compareTo(rational1.add(rational1)) < 0);
+		}
 		assertEquals(rational1.subtract(1), rational1.add(-1));
 		assertEquals(rational1.multiply(2), rational1.add(rational1));
 		assertEquals(rational1, rational1.add(Rational.ZERO));
 		assertEquals(rational1.add(Rational.ONE), rational1.add(1));
-	}
-
-	@Test
-	public void testAddAssociative() {
-		fail();
 	}
 
 	@Test
@@ -83,7 +78,6 @@ public class RationalTest {
 	public void testDivide() {
 		assertEquals(rational1, rational1.divide(1));
 		assertTrue(rational1.divide(2).compareTo(rational1) < 0);
-		assertTrue(rational1.divide(0.5).compareTo(rational1) > 0);
 	}
 
 	@Test
@@ -99,16 +93,10 @@ public class RationalTest {
 	}
 
 	@Test
-	public void testLowestCommonDenominator() {
-		fail();
-	}
-
-	@Test
 	public void testMultiply() {
 		assertEquals(rational1, rational1.multiply(1));
-		assertEquals(0, rational1.multiply(0));
+		assertEquals(Rational.ZERO, rational1.multiply(0));
 		assertTrue(rational1.multiply(2).compareTo(rational1) > 0);
-		assertTrue(rational1.multiply(0.5).compareTo(rational1) < 0);
 	}
 
 	@Test
@@ -118,15 +106,25 @@ public class RationalTest {
 
 	@Test
 	public void testOpposite() {
-		if (rational1.signum() != 0) {
-			assertEquals(rational1.multiply(-1), rational1.opposite());
-		}
+		assertEquals(rational1.multiply(-1), rational1.opposite());
 	}
 
 	@Test
 	public void testSignum() {
 		int sign = rational1.signum();
 		assertTrue(sign == -1 || sign == 0 || sign == 1);
-		assertEquals((int) Math.signum(rational1.toInteger()), sign);
+		assertEquals((int) Math.signum(rational1.toDouble()), sign);
+	}
+
+	@Test
+	public void testSubtract() {
+		if (!rational1.isNegative()) {
+			assertTrue(rational1.compareTo(rational1.subtract(rational1)) > 0);
+			assertEquals(Rational.ZERO, rational1.subtract(rational1));
+			assertEquals(rational1.opposite(), rational1.subtract(rational1).subtract(rational1));
+		}
+		assertEquals(rational1.add(-1), rational1.subtract(1));
+		assertEquals(rational1, rational1.subtract(Rational.ZERO));
+		assertEquals(rational1.subtract(Rational.ONE), rational1.subtract(1));
 	}
 }

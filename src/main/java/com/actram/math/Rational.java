@@ -27,58 +27,81 @@ public class Rational implements Comparable<Rational> {
 	}
 
 	public Rational(int p, int q) {
+		if (q == 0) {
+			throw new IllegalArgumentException("the denominator cannot be zero");
+		}
 
 		// Store the sign in the numerator
 		if (q < 0) {
-			q = -q;
 			p = -p;
+			q = -q;
 		}
 
 		// Reduce the fraction as much as possible
-		int gcd = MathUtil.gcd(p, q);
-		this.p = p / gcd;
-		this.q = q / gcd;
+		int gcd = Math.abs(MathUtil.gcd(p, q));
+		this.p = (p / gcd);
+		this.q = (q / gcd);
 	}
 
 	public Rational absolute() {
-		return null;
+		return (p < 0 ? opposite() : this);
 	}
 
-	public Rational add(double n) {
-		return null;
+	public Rational add(int n) {
+		return this.set((p + q) * n, q * n);
 	}
 
 	public Rational add(Rational r) {
-		return null;
+		return this.set(p * r.q + q * r.p, q * r.q);
 	}
 
 	@Override
 	public int compareTo(Rational r) {
-		return 0;
+		return (p * r.q - q * r.p);
 	}
 
 	public int denominator() {
-		return -1;
+		return this.q;
 	}
 
-	public Rational divide(double i) {
-		return null;
+	public Rational divide(int n) {
+		return this.set(p, q * n);
 	}
 
 	public Rational divide(Rational r) {
 		return this.set(p * r.q, q * r.p);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		Rational other = (Rational) obj;
+		if (p != other.p) return false;
+		if (q != other.q) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + p;
+		result = prime * result + q;
+		return result;
+	}
+
 	public Rational inverse() {
-		return null;
+		return this.set(q, p);
 	}
 
 	public boolean isNegative() {
-		return p < 0;
+		return (p < 0);
 	}
 
-	public Rational multiply(double n) {
-		return this;
+	public Rational multiply(int n) {
+		return this.set(p * n, q);
 	}
 
 	public Rational multiply(Rational r) {
@@ -86,11 +109,11 @@ public class Rational implements Comparable<Rational> {
 	}
 
 	public int numerator() {
-		return -1;
+		return Math.abs(p);
 	}
 
 	public Rational opposite() {
-		return null;
+		return this.set(-p, q);
 	}
 
 	public Rational set(int p, int q) {
@@ -98,19 +121,23 @@ public class Rational implements Comparable<Rational> {
 	}
 
 	public int signum() {
-		return -1;
+		return (int) Math.signum(p);
 	}
 
-	public Rational subtract(double n) {
-		return null;
+	public Rational subtract(int n) {
+		return this.add(-n);
+	}
+
+	public Rational subtract(Rational r) {
+		return this.set((-p) * r.q + q * r.p, q * r.q);
 	}
 
 	public double toDouble() {
-		return -1;
+		return ((double) p / q);
 	}
 
 	public int toInteger() {
-		return -1;
+		return (int) toDouble();
 	}
 
 	public String toString() {
