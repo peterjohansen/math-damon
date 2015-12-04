@@ -9,13 +9,15 @@ package com.actram.math;
  */
 public class Rational implements Comparable<Rational> {
 	public static final Rational NEGATIVE_ONE = new Rational(-1);
+	public static final Rational NEGATIVE_HALF = new Rational(-1, 2);
 	public static final Rational ZERO = new Rational(0);
+	public static final Rational HALF = new Rational(1, 2);
 	public static final Rational ONE = new Rational(1);
 
-	public static Rational valueOf(String str) {
-		return null;
+	public static Rational approximate(double value) {
+		throw new UnsupportedOperationException("not implemented yet");
 	}
-
+	
 	/** The numerator. Also contains the sign. */
 	private final int p;
 
