@@ -19,7 +19,7 @@ public class Rational implements Comparable<Rational> {
 	/** The numerator. Also contains the sign. */
 	private final int p;
 
-	/** The denominator. */
+	/** The denominator. Always positive. */
 	private final int q;
 
 	public Rational(int p) {
@@ -44,24 +44,24 @@ public class Rational implements Comparable<Rational> {
 	}
 
 	public Rational absolute() {
-		return (p < 0 ? opposite() : this);
+		return (p < 0 ? negate() : this);
 	}
 
 	public Rational add(int n) {
-		return this.set((p + q) * n, q * n);
+		return this.set(p * 1 + n * q, q * 1);
 	}
 
 	public Rational add(Rational r) {
-		return this.set(p * r.q + q * r.p, q * r.q);
+		return this.set(p * r.q + r.p * q, q * r.q);
 	}
 
 	@Override
 	public int compareTo(Rational r) {
-		return (p * r.q - q * r.p);
-	}
-
-	public int denominator() {
-		return this.q;
+		final long lhs = p * r.q;
+		final long rhs = q * r.p;
+		if (lhs < rhs) return -1;
+		if (lhs > rhs) return +1;
+		return 0;
 	}
 
 	public Rational divide(int n) {
@@ -83,6 +83,14 @@ public class Rational implements Comparable<Rational> {
 		return true;
 	}
 
+	public int getDenominator() {
+		return this.q;
+	}
+
+	public int getNumerator() {
+		return Math.abs(p);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -100,6 +108,10 @@ public class Rational implements Comparable<Rational> {
 		return (p < 0);
 	}
 
+	public Rational mediant(Rational r) {
+		return this.set(p + r.p, q + r.q);
+	}
+
 	public Rational multiply(int n) {
 		return this.set(p * n, q);
 	}
@@ -108,11 +120,7 @@ public class Rational implements Comparable<Rational> {
 		return this.set(p * r.p, q * r.q);
 	}
 
-	public int numerator() {
-		return Math.abs(p);
-	}
-
-	public Rational opposite() {
+	public Rational negate() {
 		return this.set(-p, q);
 	}
 
@@ -125,15 +133,15 @@ public class Rational implements Comparable<Rational> {
 	}
 
 	public Rational subtract(int n) {
-		return this.add(-n);
+		return this.set(p * 1 - (n * q), q * 1);
 	}
 
 	public Rational subtract(Rational r) {
-		return this.set((-p) * r.q + q * r.p, q * r.q);
+		return this.set(p * r.q - (r.p * q), q * r.q);
 	}
 
 	public double toDouble() {
-		return ((double) p / q);
+		return (((double) p) / q);
 	}
 
 	public int toInteger() {

@@ -40,7 +40,7 @@ public class RationalTest {
 
 	@Test
 	public void testAbsolute() {
-		assertEquals(rational1.absolute(), new Rational(rational1.numerator(), rational1.denominator()));
+		assertEquals(rational1.absolute(), new Rational(rational1.getNumerator(), rational1.getDenominator()));
 		if (rational1.isNegative()) {
 			assertNotEquals(rational1, rational1.absolute());
 		}
@@ -65,25 +65,29 @@ public class RationalTest {
 	@Test
 	public void testCompareTo() {
 		assertEquals(rational1.toDouble() < rational1.add(1).toDouble(), rational1.compareTo(rational1.add(1)) < 0);
-		assertEquals(rational1.toDouble() > rational1.subtract(1).toDouble(), rational1.compareTo(rational1.add(1)) > 0);
+		assertEquals(rational1.toDouble() > rational1.subtract(1).toDouble(), rational1.compareTo(rational1.subtract(1)) > 0);
 		assertTrue(rational1.compareTo(rational1) == 0);
-	}
-
-	@Test
-	public void testDenominator() {
-		assertTrue(rational1.denominator() > 0);
 	}
 
 	@Test
 	public void testDivide() {
 		assertEquals(rational1, rational1.divide(1));
-		assertTrue(rational1.divide(2).compareTo(rational1) < 0);
+		if (rational1.isNegative()) {
+			assertTrue(rational1.divide(2).compareTo(rational1) > 0);
+		} else {
+			assertTrue(rational1.divide(2).compareTo(rational1) < 0);
+		}
+	}
+
+	@Test
+	public void testGetDenominator() {
+		assertTrue(rational1.getDenominator() > 0);
 	}
 
 	@Test
 	public void testInverse() {
-		assertEquals(rational1.numerator(), rational1.inverse().denominator());
-		assertEquals(rational1.denominator(), rational1.inverse().numerator());
+		assertEquals(rational1.getNumerator(), rational1.inverse().getDenominator());
+		assertEquals(rational1.getDenominator(), rational1.inverse().getNumerator());
 		assertEquals(rational1.signum(), rational1.inverse().signum());
 	}
 
@@ -96,7 +100,11 @@ public class RationalTest {
 	public void testMultiply() {
 		assertEquals(rational1, rational1.multiply(1));
 		assertEquals(Rational.ZERO, rational1.multiply(0));
-		assertTrue(rational1.multiply(2).compareTo(rational1) > 0);
+		if (rational1.isNegative()) {
+			assertTrue(rational1.multiply(2).compareTo(rational1) < 0);
+		} else {
+			assertTrue(rational1.multiply(2).compareTo(rational1) > 0);
+		}
 	}
 
 	@Test
@@ -105,8 +113,8 @@ public class RationalTest {
 	}
 
 	@Test
-	public void testOpposite() {
-		assertEquals(rational1.multiply(-1), rational1.opposite());
+	public void testNegate() {
+		assertEquals(rational1.multiply(-1), rational1.negate());
 	}
 
 	@Test
@@ -121,7 +129,7 @@ public class RationalTest {
 		if (!rational1.isNegative()) {
 			assertTrue(rational1.compareTo(rational1.subtract(rational1)) > 0);
 			assertEquals(Rational.ZERO, rational1.subtract(rational1));
-			assertEquals(rational1.opposite(), rational1.subtract(rational1).subtract(rational1));
+			assertEquals(rational1.negate(), rational1.subtract(rational1).subtract(rational1));
 		}
 		assertEquals(rational1.add(-1), rational1.subtract(1));
 		assertEquals(rational1, rational1.subtract(Rational.ZERO));
