@@ -1,5 +1,5 @@
 # Math Damon
-Immutable Java math library
+Immutable Java math library.
 
 ## Examples
 
